@@ -6,8 +6,6 @@ import (
 )
 
 func NewRootCommand() *cobra.Command {
-    //var flags *pflag.FlagSet
-
     command := &cobra.Command{
         Use:              "lsr [OPTIONS] COMMAND [ARG...]",
         Short:            "A self-sufficient runtime for discovery",
@@ -16,6 +14,5 @@ func NewRootCommand() *cobra.Command {
         TraverseChildren: true,
         Args:             cmd.NoArgs,
     }
-
     return command
 }

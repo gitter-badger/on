@@ -6,19 +6,20 @@ import (
     "fmt"
     "continuul.io/lsr/pkg/cluster"
     "time"
-    "log"
     "os"
     "os/signal"
     "syscall"
     "io"
     "net"
+    "github.com/pkg/errors"
 )
 
 type agentOptions struct {
-    NodeName  string
-    BindAddr  string
-    Ports     discovery.PortConfig
-    StartJoin cmd.ListOpts
+    NodeName     string
+    BindAddr     string
+    Ports        discovery.PortConfig
+    StartJoin    cmd.ListOpts
+    SnapshotPath string
 }
 
 // BindAddrParts returns the parts of the BindAddr that should be
@@ -74,7 +75,7 @@ func loadAgentOptions() *agentOptions {
     return base
 }
 
-func NewAgentCommand() *cobra.Command {
+func NewAgentCommand(cli *cmd.Cli) *cobra.Command {
     opts := agentOptions{
         StartJoin: cmd.NewListOpts(ValidateJoin),
     }
@@ -84,7 +85,7 @@ func NewAgentCommand() *cobra.Command {
         Short: "Runs an agent",
         Args:  cmd.NoArgs,
         RunE:  func(cmd *cobra.Command, args []string) error {
-            return runAgent(args, &opts)
+            return runAgent(cli, args, &opts)
         },
     }
 
@@ -95,6 +96,8 @@ func NewAgentCommand() *cobra.Command {
         "address to bind server listeners to")
     flags.Var(&opts.StartJoin, "join",
         "address of agent to join on startup")
+    flags.StringVar(&opts.SnapshotPath, "snapshot", "",
+        "path to the snapshot file")
 
     return command
 }
@@ -104,6 +107,9 @@ func mergeOptions(a, b *agentOptions) *agentOptions {
 
     if b.NodeName != "" {
         result.NodeName = b.NodeName
+    }
+    if b.SnapshotPath != "" {
+        result.SnapshotPath = b.SnapshotPath
     }
 
     // Copy the bind address
@@ -116,7 +122,7 @@ func mergeOptions(a, b *agentOptions) *agentOptions {
         result.StartJoin.Set(v)
     }
 
-    fmt.Printf("Join: %v", result.StartJoin.GetAll())
+    // todo: cli.Logger.Print("Join: %v", result.StartJoin.GetAll())
 
     return &result
 }
@@ -126,8 +132,13 @@ var stdOut io.Writer = os.Stdout
 var stdErr io.Writer = os.Stderr
 
 func Output(s string) error {
-    _, err := stdOut.Write([]byte(s))
+    fmt.Println("")
+    _, err := fmt.Printf(s) //stdOut.Write([]byte(s))
     return err
+}
+
+func Info(message string) {
+    Output(message)
 }
 
 func Error(s string) error {
@@ -136,7 +147,7 @@ func Error(s string) error {
 }
 
 // handleSignals blocks until we get an exit-causing signal
-func handleSignals(config *discovery.Config, server *discovery.Server) int {
+func handleSignals(_ *discovery.Config, server *discovery.Server) int {
     signalCh := make(chan os.Signal, 4)
     signal.Notify(signalCh, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
     signal.Notify(signalCh, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGPIPE)
@@ -148,7 +159,7 @@ func handleSignals(config *discovery.Config, server *discovery.Server) int {
     case s := <-signalCh:
         sig = s
     }
-    Output(fmt.Sprintf("Caught signal: %v", sig))
+    Output(fmt.Sprintf("[INFO] Caught signal: %v\n", sig))
 
     // Skip SIGPIPE signals
     if sig == syscall.SIGPIPE {
@@ -170,7 +181,7 @@ func handleSignals(config *discovery.Config, server *discovery.Server) int {
 
     // Attempt a graceful leave
     gracefulCh := make(chan struct{})
-    Output("Gracefully shutting down agent...")
+    Output("Gracefully shutting down agent...\n")
     go func() {
         if err := server.Leave(); err != nil {
             Error(fmt.Sprintf("Error: %s", err))
@@ -190,7 +201,7 @@ func handleSignals(config *discovery.Config, server *discovery.Server) int {
     }
 }
 
-func serverConfig(opts *agentOptions) *discovery.Config {
+func serverConfig(opts *agentOptions) (*discovery.Config, error) {
     base := discovery.DefaultConfig()
 
     base.NodeName = opts.NodeName
@@ -199,29 +210,44 @@ func serverConfig(opts *agentOptions) *discovery.Config {
     if opts.BindAddr != "" {
         bindIP, bindPort, err := opts.AddrParts(opts.BindAddr)
         if err != nil {
-            fmt.Println(fmt.Sprintf("Invalid bind address: %s", err))
-            return nil
+            return nil, errors.Wrapf(err, "Invalid bind address: %s", opts.BindAddr)
         }
 
         base.SerfLANConfig.MemberlistConfig.BindAddr = bindIP
         base.SerfLANConfig.MemberlistConfig.BindPort = bindPort
     }
 
-    return base
+    if opts.SnapshotPath == "" {
+        return nil, errors.New("Must specify data directory using --snapshot")
+    }
+    base.SerfLANConfig.SnapshotPath = opts.SnapshotPath
+
+    return base, nil
 }
 
-func runAgent(args []string, opts *agentOptions) error {
-    opts = mergeOptions(loadAgentOptions(), opts)
-    fmt.Printf("LSR agent %s...\n", opts.BindAddr)
+func runAgent(cli *cmd.Cli, _ []string, opts *agentOptions) error {
 
-    config := serverConfig(opts)
+    cli.Println("Starting Serf agent...")
+
+    opts = mergeOptions(loadAgentOptions(), opts)
+
+    config, err := serverConfig(opts)
+    if err != nil {
+        return fmt.Errorf("Failed to start lan serf: %s", err)
+    }
+
     s, err := discovery.NewServer(config)
     if err != nil {
-        log.Fatal(fmt.Errorf("Failed to start lan serf: %v", err))
+        return fmt.Errorf("Failed to start lan serf: %v", err)
     }
     defer s.Shutdown()
 
     s.JoinLAN(opts.StartJoin.GetAll())
+
+    cli.Println("Serf agent running!")
+    cli.Printf("     Node name: '%s'", config.NodeName)
+    cli.Printf(fmt.Sprintf("     Bind addr: '%s'", opts.BindAddr))
+    //Info(fmt.Sprintf("      Snapshot: %v", opts..SnapshotPath != ""))
 
     handleSignals(config, s)
 

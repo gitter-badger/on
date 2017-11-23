@@ -3,14 +3,51 @@ package main
 import (
     "fmt"
     "os"
+    "continuul.io/lsr/cmd"
     "continuul.io/lsr/cmd/commands"
-    "continuul.io/lsr/cmd/root"
+    "github.com/spf13/cobra"
 )
+
+func setupRootCommand(rootCmd *cobra.Command) {
+    rootCmd.SetFlagErrorFunc(FlagErrorFunc)
+}
+
+// FlagErrorFunc prints an error message which matches the format of the
+// docker/docker/cli error messages
+func FlagErrorFunc(command *cobra.Command, err error) error {
+    if err == nil {
+        return nil
+    }
+
+    usage := ""
+    if command.HasSubCommands() {
+        usage = "\n\n" + command.UsageString()
+    }
+    return cmd.StatusError{
+        Status:     fmt.Sprintf("%s\nSee '%s --help'.%s", err, command.CommandPath(), usage),
+        StatusCode: 125,
+    }
+}
+
+func newLsrCommand(cli *cmd.Cli) *cobra.Command {
+    rootCmd := &cobra.Command{
+        Use:              "lsr [OPTIONS] COMMAND [ARG...]",
+        Short:            "A self-sufficient runtime for discovery",
+        SilenceUsage:     true,
+        SilenceErrors:    true,
+        TraverseChildren: true,
+        Args:             cmd.NoArgs,
+    }
+    setupRootCommand(rootCmd)
+    // todo: common flags go here...
+    commands.AddCommands(cli, rootCmd)
+    return rootCmd
+}
 
 func main() {
 
-    rootCmd := root.NewRootCommand()
-    commands.AddCommands(rootCmd)
+    cli := cmd.NewLsrCli(os.Stdin, os.Stdout, os.Stderr)
+    rootCmd := newLsrCommand(cli)
 
     if err := rootCmd.Execute(); err != nil {
         fmt.Println(os.Stderr, err)

@@ -4,6 +4,7 @@ import (
     "io"
     "log"
     "fmt"
+    "github.com/spf13/cobra"
 )
 
 // DockerCli is an instance the docker command line client.
@@ -37,4 +38,11 @@ func (c *Cli) Info(message string) {
 
 func (c *Cli) Error(message string) {
     c.errLogger.Print("[ERROR] %s", message)
+}
+
+// ShowHelp shows the command help.
+func (cli *Cli) ShowHelp(cmd *cobra.Command, args []string) error {
+    cmd.SetOutput(cli.err)
+    cmd.HelpFunc()(cmd, args)
+    return nil
 }

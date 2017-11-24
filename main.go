@@ -10,6 +10,8 @@ import (
 
 func setupRootCommand(rootCmd *cobra.Command) {
     rootCmd.SetFlagErrorFunc(FlagErrorFunc)
+    rootCmd.SetHelpTemplate(helpTemplate)
+    rootCmd.SetUsageTemplate(usageTemplate)
 }
 
 // FlagErrorFunc prints an error message which matches the format of the
@@ -29,6 +31,14 @@ func FlagErrorFunc(command *cobra.Command, err error) error {
     }
 }
 
+func noArgs(cmd *cobra.Command, args []string) error {
+    if len(args) == 0 {
+        return nil
+    }
+    return fmt.Errorf(
+        "docker: '%s' is not a docker command.\nSee 'docker --help'", args[0])
+}
+
 func newLsrCommand(cli *cmd.Cli) *cobra.Command {
     rootCmd := &cobra.Command{
         Use:              "lsr [OPTIONS] COMMAND [ARG...]",
@@ -36,7 +46,10 @@ func newLsrCommand(cli *cmd.Cli) *cobra.Command {
         SilenceUsage:     true,
         SilenceErrors:    true,
         TraverseChildren: true,
-        Args:             cmd.NoArgs,
+        Args:             noArgs,
+        RunE: func(cmd *cobra.Command, args []string) error {
+            return cli.ShowHelp(cmd, args)
+        },
     }
     setupRootCommand(rootCmd)
     // todo: common flags go here...
@@ -45,30 +58,51 @@ func newLsrCommand(cli *cmd.Cli) *cobra.Command {
 }
 
 func main() {
-
     cli := cmd.NewLsrCli(os.Stdin, os.Stdout, os.Stderr)
     rootCmd := newLsrCommand(cli)
 
     if err := rootCmd.Execute(); err != nil {
-        fmt.Println(os.Stderr, err)
-        //if sterr, ok := err.(cli.StatusError); ok {
-        //    if sterr.Status != "" {
-        //        fmt.Fprintln(stderr, sterr.Status)
-        //    }
-        //    // StatusError should only be used for errors, and all errors should
-        //    // have a non-zero exit status, so never exit with 0
-        //    if sterr.StatusCode == 0 {
-        //        os.Exit(1)
-        //    }
-        //    os.Exit(sterr.StatusCode)
-        //}
-        //fmt.Fprintln(stderr, err)
+        if sterr, ok := err.(cmd.StatusError); ok {
+            if sterr.Status != "" {
+                fmt.Fprintln(os.Stderr, sterr.Status)
+            }
+            // StatusError should only be used for errors, and all errors should
+            // have a non-zero exit status, so never exit with 0
+            if sterr.StatusCode == 0 {
+                os.Exit(1)
+            }
+            os.Exit(sterr.StatusCode)
+        }
+        fmt.Fprintln(os.Stderr, err)
         os.Exit(1)
     }
-
-
-    //dockerCli := command.NewDockerCli(stdin, stdout, stderr)
-    //cmd := newDockerCommand(dockerCli)
-    //
-    //stdin, stdout, stderr := term.StdStreams()
 }
+
+var helpTemplate = `
+{{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
+
+var usageTemplate = `Usage:{{if .Runnable}}
+  {{if .HasAvailableFlags}}{{appendIfNotPresent .UseLine "[flags]"}}{{else}}{{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+  {{ .CommandPath}} [command]{{end}}{{if gt .Aliases 0}}
+
+Aliases:
+  {{.NameAndAliases}}
+{{end}}{{if .HasExample}}
+
+Examples:
+{{ .Example }}{{end}}{{ if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if .IsAvailableCommand}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableLocalFlags}}
+
+Flags:
+{{.LocalFlags.FlagUsages | trimRightSpace}}{{end}}{{ if .HasAvailableInheritedFlags}}
+
+Global Flags:
+{{.InheritedFlags.FlagUsages | trimRightSpace}}{{end}}{{if .HasHelpSubCommands}}
+
+Additional help topics:{{range .Commands}}{{if .IsHelpCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{ if .HasAvailableSubCommands }}
+
+Run "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
+`

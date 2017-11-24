@@ -236,6 +236,11 @@ func runAgent(cli *cmd.Cli, _ []string, opts *agentOptions) error {
         return fmt.Errorf("Failed to start lan serf: %s", err)
     }
 
+    cli.Println("Serf agent running!")
+    cli.Printf("     Node name: '%s'", config.NodeName)
+    cli.Printf(fmt.Sprintf("     Bind addr: '%s'", opts.BindAddr))
+    cli.Printf(fmt.Sprintf("      Snapshot: %v", opts.SnapshotPath != ""))
+
     s, err := discovery.NewServer(config)
     if err != nil {
         return fmt.Errorf("Failed to start lan serf: %v", err)
@@ -243,11 +248,6 @@ func runAgent(cli *cmd.Cli, _ []string, opts *agentOptions) error {
     defer s.Shutdown()
 
     s.JoinLAN(opts.StartJoin.GetAll())
-
-    cli.Println("Serf agent running!")
-    cli.Printf("     Node name: '%s'", config.NodeName)
-    cli.Printf(fmt.Sprintf("     Bind addr: '%s'", opts.BindAddr))
-    //Info(fmt.Sprintf("      Snapshot: %v", opts..SnapshotPath != ""))
 
     handleSignals(config, s)
 

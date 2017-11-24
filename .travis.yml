@@ -15,4 +15,4 @@ script:
   - git clone --depth=50 --branch=master https://github.com/continuul/on.git $GOPATH/src/continuul.io/on
   - cd $GOPATH/src/continuul.io/on
   - dep ensure
-  - make all
+  - make tools all

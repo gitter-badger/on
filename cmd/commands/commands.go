@@ -1,9 +1,9 @@
 package commands
 
 import (
-	"continuul.io/lsr/cmd"
-	"continuul.io/lsr/cmd/agent"
-	"continuul.io/lsr/cmd/version"
+	"continuul.io/adm/cmd"
+	"continuul.io/adm/cmd/agent"
+	"continuul.io/adm/cmd/version"
 	"github.com/spf13/cobra"
 )
 

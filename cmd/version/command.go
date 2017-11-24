@@ -1,7 +1,7 @@
 package version
 
 import (
-	"continuul.io/lsr/cmd"
+	"continuul.io/adm/cmd"
 	"github.com/spf13/cobra"
 )
 

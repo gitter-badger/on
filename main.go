@@ -1,8 +1,8 @@
 package main
 
 import (
-	"continuul.io/lsr/cmd"
-	"continuul.io/lsr/cmd/commands"
+	"continuul.io/adm/cmd"
+	"continuul.io/adm/cmd/commands"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"

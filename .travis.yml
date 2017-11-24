@@ -12,6 +12,7 @@ before_install:
   - chmod +x $GOPATH/bin/dep
 
 script:
+  - echo $PROJECT
   - mkdir -p $PROJECT
   - cd $PROJECT
   - git clone git@github.com:continuul/adm.git

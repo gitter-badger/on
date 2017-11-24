@@ -6,4 +6,5 @@ go:
 
 script:
   - cd ${TRAVIS_BUILD_DIR}
-  - make
+  - make tools
+  - make all

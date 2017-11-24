@@ -1,4 +1,4 @@
-package main
+package main // import "continuul.io/adm"
 
 import (
 	"continuul.io/adm/cmd"

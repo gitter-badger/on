@@ -1,5 +1,5 @@
 # on
-Go cluster membership disposition; automation, discovery, high availability, policy-based management.
+Go cluster management: automation, discovery, high availability, membership, policy-based management.
 
 [![Build Status](https://travis-ci.org/continuul/on.svg?branch=master)](https://travis-ci.org/continuul/on)
 [![Go Report Card](https://goreportcard.com/badge/github.com/continuul/on)](https://goreportcard.com/report/github.com/continuul/on)

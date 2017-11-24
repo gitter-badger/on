@@ -12,10 +12,7 @@ before_install:
   - chmod +x $GOPATH/bin/dep
 
 script:
-  - echo $PROJECT
-  - mkdir -p $PROJECT
-  - cd $PROJECT
-  - git clone git@github.com:continuul/adm.git
-  - cd $PROJECT/adm
+  - git clone --depth=50 --branch=master https://github.com/continuul/adm.git $GOPATH/src/continuul.io/adm
+  - cd $GOPATH/src/continuul.io/adm
   - dep ensure
   - make all

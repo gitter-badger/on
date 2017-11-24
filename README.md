@@ -1,4 +1,4 @@
-# go-cluster
+# adm
 Go cluster membership disposition; automation, discovery, high availability, policy-based management.
 
 [![Build Status](https://travis-ci.org/continuul/adm.svg?branch=master)](https://travis-ci.org/continuul/adm)
@@ -15,17 +15,17 @@ make
 Node 1:
 
 ```
-lsr agent --node test --bind localhost:8765
+adm agent --node test --bind localhost:8765
 ```
 
 Node 2:
 
 ```
-lsr agent --bind localhost:9876 --join localhost:8765
+adm agent --bind localhost:9876 --join localhost:8765
 ```
 
 Node 3:
 
 ```
-lsr agent --node funk --bind localhost:3433 --join localhost:8765
+adm agent --node funk --bind localhost:3433 --join localhost:8765
 ```

@@ -7,7 +7,7 @@ import (
 
 func NewRootCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:              "lsr [OPTIONS] COMMAND [ARG...]",
+		Use:              "adm [OPTIONS] COMMAND [ARG...]",
 		Short:            "A self-sufficient runtime for discovery",
 		SilenceUsage:     true,
 		SilenceErrors:    true,

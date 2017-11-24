@@ -18,5 +18,5 @@ func NewVersionCommand(cli *cmd.Cli) *cobra.Command {
 }
 
 func showVersion(cli *cmd.Cli) {
-	cli.Printf("LSR version %s, build %s\n", Version, GitCommit)
+	cli.Printf("adm version %s, build %s\n", Version, GitCommit)
 }

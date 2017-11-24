@@ -39,9 +39,9 @@ func noArgs(cmd *cobra.Command, args []string) error {
 		"docker: '%s' is not a docker command.\nSee 'docker --help'", args[0])
 }
 
-func newLsrCommand(cli *cmd.Cli) *cobra.Command {
+func newAdmCommand(cli *cmd.Cli) *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:              "lsr [OPTIONS] COMMAND [ARG...]",
+		Use:              "adm [OPTIONS] COMMAND [ARG...]",
 		Short:            "A self-sufficient runtime for discovery",
 		SilenceUsage:     true,
 		SilenceErrors:    true,
@@ -58,8 +58,8 @@ func newLsrCommand(cli *cmd.Cli) *cobra.Command {
 }
 
 func main() {
-	cli := cmd.NewLsrCli(os.Stdin, os.Stdout, os.Stderr)
-	rootCmd := newLsrCommand(cli)
+	cli := cmd.NewAdmCli(os.Stdin, os.Stdout, os.Stderr)
+	rootCmd := newAdmCommand(cli)
 
 	if err := rootCmd.Execute(); err != nil {
 		if sterr, ok := err.(cmd.StatusError); ok {

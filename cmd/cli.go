@@ -15,7 +15,7 @@ type Cli struct {
 	errLogger *log.Logger
 }
 
-func NewLsrCli(in io.Reader, out, err io.Writer) *Cli {
+func NewAdmCli(in io.Reader, out, err io.Writer) *Cli {
 	logger := log.New(out, "", log.LstdFlags)
 	return &Cli{
 		out:       out,

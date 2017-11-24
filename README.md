@@ -1,4 +1,6 @@
 # on
+
+[![Join the chat at https://gitter.im/continuul/on](https://badges.gitter.im/continuul/on.svg)](https://gitter.im/continuul/on?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Go cluster management: automation, discovery, high availability, membership, policy-based management.
 
 [![Build Status](https://travis-ci.org/continuul/on.svg?branch=master)](https://travis-ci.org/continuul/on)

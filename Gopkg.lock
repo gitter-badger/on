@@ -44,16 +44,16 @@
   revision = "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
 
 [[projects]]
-  branch = "master"
   name = "github.com/hashicorp/memberlist"
   packages = ["."]
-  revision = "9bdd37bfb26bd039c08b0f36be6f80ceede4aaf3"
+  revision = "ce8abaa0c60c2d6bee7219f5ddf500e0a1457b28"
+  version = "v0.1.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/hashicorp/serf"
   packages = ["coordinate","serf"]
-  revision = "c20a0b1b1ea9eb8168bcdec0116688fa9254e449"
+  revision = "d6574a5bb1226678d7010325fb6c985db20ee458"
+  version = "v0.8.1"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -68,10 +68,10 @@
   revision = "cdb76b64a347436f019bf96ab5eb2d74e73e964b"
 
 [[projects]]
-  branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "f15c970de5b76fac0b59abb32d62c17cc7bed265"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   branch = "master"
@@ -80,20 +80,20 @@
   revision = "e2103e2c35297fb7e17febb81e49b312087a2372"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "1be1d2841c773c01bee8289f55f7463b6e2c2539"
+  revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
+  version = "v0.0.1"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "4c012f6dcd9546820e378d0bdda4d8fc772cdfea"
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "85922e6fef4ddb687314b54a0410fe49863c3a6aac2a2fe0d1250e702a9060a0"
+  inputs-digest = "040a56a9b5b65ed9157130a91b88d26771ce9ac1dec583640ccdd5a2f8a3789e"
   solver-name = "gps-cdcl"
   solver-version = 1

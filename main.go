@@ -1,81 +1,81 @@
 package main
 
 import (
-    "fmt"
-    "os"
-    "continuul.io/lsr/cmd"
-    "continuul.io/lsr/cmd/commands"
-    "github.com/spf13/cobra"
+	"continuul.io/lsr/cmd"
+	"continuul.io/lsr/cmd/commands"
+	"fmt"
+	"github.com/spf13/cobra"
+	"os"
 )
 
 func setupRootCommand(rootCmd *cobra.Command) {
-    rootCmd.SetFlagErrorFunc(FlagErrorFunc)
-    rootCmd.SetHelpTemplate(helpTemplate)
-    rootCmd.SetUsageTemplate(usageTemplate)
+	rootCmd.SetFlagErrorFunc(FlagErrorFunc)
+	rootCmd.SetHelpTemplate(helpTemplate)
+	rootCmd.SetUsageTemplate(usageTemplate)
 }
 
 // FlagErrorFunc prints an error message which matches the format of the
 // docker/docker/cli error messages
 func FlagErrorFunc(command *cobra.Command, err error) error {
-    if err == nil {
-        return nil
-    }
+	if err == nil {
+		return nil
+	}
 
-    usage := ""
-    if command.HasSubCommands() {
-        usage = "\n\n" + command.UsageString()
-    }
-    return cmd.StatusError{
-        Status:     fmt.Sprintf("%s\nSee '%s --help'.%s", err, command.CommandPath(), usage),
-        StatusCode: 125,
-    }
+	usage := ""
+	if command.HasSubCommands() {
+		usage = "\n\n" + command.UsageString()
+	}
+	return cmd.StatusError{
+		Status:     fmt.Sprintf("%s\nSee '%s --help'.%s", err, command.CommandPath(), usage),
+		StatusCode: 125,
+	}
 }
 
 func noArgs(cmd *cobra.Command, args []string) error {
-    if len(args) == 0 {
-        return nil
-    }
-    return fmt.Errorf(
-        "docker: '%s' is not a docker command.\nSee 'docker --help'", args[0])
+	if len(args) == 0 {
+		return nil
+	}
+	return fmt.Errorf(
+		"docker: '%s' is not a docker command.\nSee 'docker --help'", args[0])
 }
 
 func newLsrCommand(cli *cmd.Cli) *cobra.Command {
-    rootCmd := &cobra.Command{
-        Use:              "lsr [OPTIONS] COMMAND [ARG...]",
-        Short:            "A self-sufficient runtime for discovery",
-        SilenceUsage:     true,
-        SilenceErrors:    true,
-        TraverseChildren: true,
-        Args:             noArgs,
-        RunE: func(cmd *cobra.Command, args []string) error {
-            return cli.ShowHelp(cmd, args)
-        },
-    }
-    setupRootCommand(rootCmd)
-    // todo: common flags go here...
-    commands.AddCommands(cli, rootCmd)
-    return rootCmd
+	rootCmd := &cobra.Command{
+		Use:              "lsr [OPTIONS] COMMAND [ARG...]",
+		Short:            "A self-sufficient runtime for discovery",
+		SilenceUsage:     true,
+		SilenceErrors:    true,
+		TraverseChildren: true,
+		Args:             noArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return cli.ShowHelp(cmd, args)
+		},
+	}
+	setupRootCommand(rootCmd)
+	// todo: common flags go here...
+	commands.AddCommands(cli, rootCmd)
+	return rootCmd
 }
 
 func main() {
-    cli := cmd.NewLsrCli(os.Stdin, os.Stdout, os.Stderr)
-    rootCmd := newLsrCommand(cli)
+	cli := cmd.NewLsrCli(os.Stdin, os.Stdout, os.Stderr)
+	rootCmd := newLsrCommand(cli)
 
-    if err := rootCmd.Execute(); err != nil {
-        if sterr, ok := err.(cmd.StatusError); ok {
-            if sterr.Status != "" {
-                fmt.Fprintln(os.Stderr, sterr.Status)
-            }
-            // StatusError should only be used for errors, and all errors should
-            // have a non-zero exit status, so never exit with 0
-            if sterr.StatusCode == 0 {
-                os.Exit(1)
-            }
-            os.Exit(sterr.StatusCode)
-        }
-        fmt.Fprintln(os.Stderr, err)
-        os.Exit(1)
-    }
+	if err := rootCmd.Execute(); err != nil {
+		if sterr, ok := err.(cmd.StatusError); ok {
+			if sterr.Status != "" {
+				fmt.Fprintln(os.Stderr, sterr.Status)
+			}
+			// StatusError should only be used for errors, and all errors should
+			// have a non-zero exit status, so never exit with 0
+			if sterr.StatusCode == 0 {
+				os.Exit(1)
+			}
+			os.Exit(sterr.StatusCode)
+		}
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
 
 var helpTemplate = `

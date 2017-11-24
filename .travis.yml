@@ -6,11 +6,16 @@ go:
 
 env:
   - DEP_VERSION="0.3.2"
+  - PROJECT=$GOPATH/src/continuul.io
 
 before_install:
   - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
   - chmod +x $GOPATH/bin/dep
 
 script:
+  - mkdir -p $PROJECT
+  - cd $PROJECT
+  - git clone git@github.com:continuul/adm.git
+  - cd $PROJECT/adm
   - dep ensure
   - make all

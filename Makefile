@@ -1,5 +1,6 @@
 GOTOOLS = \
-	github.com/golang/lint/golint
+	github.com/golang/lint/golint \
+	github.com/golang/dep/cmd/dep
 
 BIN    = $(GOPATH)/bin
 GOLINT = $(BIN)/golint
@@ -14,12 +15,16 @@ GIT_IMPORT="continuul.io/adm/cmd/version"
 LDFLAGS=-ldflags "-X ${GIT_IMPORT}.Version='${VERSION}' -X ${GIT_IMPORT}.GitCommit='${GIT_COMMIT}${GIT_DIRTY}' -X ${GIT_IMPORT}.GitDescribe='${GIT_DESCRIBE}'"
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+PACKAGES := go list ./... | grep -v /vendor | grep -v /out
 
 .DEFAULT_GOAL := all
 
+.PHONY: vendor
+vendor:
+	@dep ensure -v
+
 .PHONY: all
-all:
-	@dep ensure
+all: vendor
 	@go install --tags $(BUILD_TAGS) $(LDFLAGS) .
 
 .PHONY: tools
@@ -30,14 +35,19 @@ tools:
 fmt:
 	@gofmt -l -w $(SRC)
 
+.PHONY: vet
+vet:
+	@go vet $(shell $(PACKAGES))
+
 .PHONY: lint
 lint:
-	@go list ./... \
-		| grep -v /vendor/ \
-		| cut -d '/' -f 4- \
-		| xargs -n1 \
-			golint ;\
+	@golint $(shell $(PACKAGES))
 
 .PHONY: clean
 clean:
 	@go clean -i
+	@rm -fr vendor
+
+.PHONY: version
+version:
+	@echo $(VERSION)

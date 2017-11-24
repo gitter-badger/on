@@ -1,8 +1,8 @@
 package main
 
 import (
-	"continuul.io/adm/cmd"
-	"continuul.io/adm/cmd/commands"
+	"continuul.io/on/cmd"
+	"continuul.io/on/cmd/commands"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
@@ -39,9 +39,9 @@ func noArgs(cmd *cobra.Command, args []string) error {
 		"docker: '%s' is not a docker command.\nSee 'docker --help'", args[0])
 }
 
-func newAdmCommand(cli *cmd.Cli) *cobra.Command {
+func newOnCommand(cli *cmd.Cli) *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:              "adm [OPTIONS] COMMAND [ARG...]",
+		Use:              "on [OPTIONS] COMMAND [ARG...]",
 		Short:            "A self-sufficient runtime for discovery",
 		SilenceUsage:     true,
 		SilenceErrors:    true,
@@ -58,8 +58,8 @@ func newAdmCommand(cli *cmd.Cli) *cobra.Command {
 }
 
 func main() {
-	cli := cmd.NewAdmCli(os.Stdin, os.Stdout, os.Stderr)
-	rootCmd := newAdmCommand(cli)
+	cli := cmd.NewOnCli(os.Stdin, os.Stdout, os.Stderr)
+	rootCmd := newOnCommand(cli)
 
 	if err := rootCmd.Execute(); err != nil {
 		if sterr, ok := err.(cmd.StatusError); ok {

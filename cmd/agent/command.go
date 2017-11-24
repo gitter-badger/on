@@ -1,8 +1,8 @@
 package agent
 
 import (
-	"continuul.io/adm/cmd"
-	"continuul.io/adm/pkg/cluster"
+	"continuul.io/on/cmd"
+	"continuul.io/on/pkg/cluster"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"

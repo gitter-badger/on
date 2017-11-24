@@ -1,7 +1,7 @@
 package version
 
 import (
-	"continuul.io/adm/cmd"
+	"continuul.io/on/cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -18,5 +18,5 @@ func NewVersionCommand(cli *cmd.Cli) *cobra.Command {
 }
 
 func showVersion(cli *cmd.Cli) {
-	cli.Printf("adm version %s, build %s\n", Version, GitCommit)
+	cli.Printf("on version %s, build %s\n", Version, GitCommit)
 }

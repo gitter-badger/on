@@ -11,7 +11,7 @@ BUILD=`git rev-parse HEAD`
 GIT_COMMIT="$(shell git rev-parse --short HEAD)"
 GIT_DIRTY="$(shell test -n "`git status --porcelain`" && echo "+CHANGES" || true)"
 GIT_DESCRIBE="$(shell git describe --tags --always)"
-GIT_IMPORT="continuul.io/adm/cmd/version"
+GIT_IMPORT="continuul.io/on/cmd/version"
 LDFLAGS=-ldflags "-X ${GIT_IMPORT}.Version='${VERSION}' -X ${GIT_IMPORT}.GitCommit='${GIT_COMMIT}${GIT_DIRTY}' -X ${GIT_IMPORT}.GitDescribe='${GIT_DESCRIBE}'"
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")

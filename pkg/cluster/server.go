@@ -122,7 +122,7 @@ func (s *Server) JoinLAN(addrs []string) (int, error) {
 }
 
 func (s *Server) Leave() error {
-	s.logger.Printf("[INFO] adm: server starting leave")
+	s.logger.Printf("[INFO] on: server starting leave")
 
 	// Leave the LAN pool
 	if s.serfLAN != nil {
@@ -135,7 +135,7 @@ func (s *Server) Leave() error {
 }
 
 func (s *Server) Shutdown() error {
-	s.logger.Printf("[INFO] adm: server starting shutdown")
+	s.logger.Printf("[INFO] on: server starting shutdown")
 
 	s.shutdownLock.Lock()
 	defer s.shutdownLock.Unlock()

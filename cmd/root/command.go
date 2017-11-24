@@ -1,13 +1,13 @@
 package root
 
 import (
-	"continuul.io/adm/cmd"
+	"continuul.io/on/cmd"
 	"github.com/spf13/cobra"
 )
 
 func NewRootCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:              "adm [OPTIONS] COMMAND [ARG...]",
+		Use:              "on [OPTIONS] COMMAND [ARG...]",
 		Short:            "A self-sufficient runtime for discovery",
 		SilenceUsage:     true,
 		SilenceErrors:    true,

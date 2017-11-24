@@ -1,6 +1,8 @@
 # go-cluster
 Go cluster membership disposition; automation, discovery, high availability, policy-based management.
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/continuul/go-cluster)](https://goreportcard.com/report/github.com/continuul/go-cluster)
+
 # Building
 
 ```

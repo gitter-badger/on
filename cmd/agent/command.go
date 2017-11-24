@@ -2,7 +2,7 @@ package agent
 
 import (
     "continuul.io/adm/cmd"
-    "continuul.io/adm/lib/cluster"
+    "continuul.io/adm/pkg/cluster"
     "fmt"
     "github.com/pkg/errors"
     "github.com/spf13/cobra"

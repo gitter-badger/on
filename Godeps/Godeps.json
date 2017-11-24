@@ -12,6 +12,10 @@
 			"Rev": "7554cd9344cec97297fa6649b055a8c98c2a1e55"
 		},
 		{
+			"ImportPath": "github.com/hashicorp/go-immutable-radix",
+			"Rev": "8aac2701530899b64bdea735a1de8da899815220"
+		},
+		{
 			"ImportPath": "github.com/hashicorp/go-msgpack/codec",
 			"Rev": "fa3f63826f7c23912c15263591e65d54d080b458"
 		},
@@ -22,6 +26,10 @@
 		{
 			"ImportPath": "github.com/hashicorp/go-sockaddr",
 			"Rev": "9b4c5fa5b10a683339a270d664474b9f4aee62fc"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/golang-lru/simplelru",
+			"Rev": "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/memberlist",
@@ -45,6 +53,10 @@
 		},
 		{
 			"ImportPath": "github.com/miekg/dns",
+			"Rev": "cdb76b64a347436f019bf96ab5eb2d74e73e964b"
+		},
+		{
+			"ImportPath": "github.com/miekg/dns/internal/socket",
 			"Rev": "cdb76b64a347436f019bf96ab5eb2d74e73e964b"
 		},
 		{

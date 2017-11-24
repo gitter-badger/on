@@ -6,17 +6,39 @@ Go cluster management: automation, discovery, high availability, membership, pol
 
 # Building
 
+To build the application for both Linux and Mac:
+
 ```
 make
 ```
 
+To build the Docker:
+
+```
+make docker
+```
+
 # Running a Cluster
+
+## Running a Cluster (Docker)
+
+Start a node:
+
+```
+docker run continuul/on:0.1.2
+```
+
+## Running a Cluster Locally (No Docker)
+
+Start the primordial node:
 
 Node 1:
 
 ```
 on agent --node test --bind localhost:8765
 ```
+
+Subsequent nodes you join the first node:
 
 Node 2:
 

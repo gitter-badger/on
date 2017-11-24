@@ -19,6 +19,7 @@ SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
 .PHONY: all
 all:
+	@dep ensure
 	@go install --tags $(BUILD_TAGS) $(LDFLAGS) .
 
 .PHONY: tools
